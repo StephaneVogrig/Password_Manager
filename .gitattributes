@@ -1,0 +1,72 @@
+
+# Normalisation automatique des fins de ligne pour tous les fichiers texte
+* text=auto eol=lf
+
+# Fichiers qui doivent toujours être en LF (même sous Windows)
+*.sh text eol=lf
+*.bash text eol=lf
+
+# Fichiers source courants
+*.php text eol=lf
+*.js text eol=lf
+*.jsx text eol=lf
+*.ts text eol=lf
+*.tsx text eol=lf
+*.json text eol=lf
+*.css text eol=lf
+*.scss text eol=lf
+*.html text eol=lf
+*.xml text eol=lf
+*.yml text eol=lf
+*.yaml text eol=lf
+*.md text eol=lf
+*.txt text eol=lf
+
+# Python
+*.py text eol=lf
+
+# Java
+*.java text eol=lf
+
+# C/C++
+*.c text eol=lf
+*.cpp text eol=lf
+*.h text eol=lf
+*.hpp text eol=lf
+
+# Fichiers de configuration
+.gitignore text eol=lf
+.gitattributes text eol=lf
+.editorconfig text eol=lf
+Makefile text eol=lf
+Dockerfile text eol=lf
+*.conf text eol=lf
+*.config text eol=lf
+*.ini text eol=lf
+*.env text eol=lf
+*.example text eol=lf
+
+# Fichiers Windows qui DOIVENT rester en CRLF
+*.bat text eol=crlf
+*.cmd text eol=crlf
+*.ps1 text eol=crlf
+
+# Fichiers binaires
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.ico binary
+*.pdf binary
+*.zip binary
+*.tar binary
+*.gz binary
+*.exe binary
+*.dll binary
+*.so binary
+*.dylib binary
+*.woff binary
+*.woff2 binary
+*.ttf binary
+*.eot binary
+*.otf binary
