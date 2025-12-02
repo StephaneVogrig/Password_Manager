@@ -1,4 +1,4 @@
-from src.model import Entry
+from src.entry import Entry
 from datetime import datetime, timezone
 
 def test_entry_default_values():
