@@ -47,15 +47,4 @@ def test_entry_to_dict_and_back():
     d = entry.to_dict()
     restored = Entry.from_dict(d)
 
-    assert restored.id == entry.id
-    assert restored.site_name == entry.site_name
-    assert restored.site_url == entry.site_url
-    assert restored.identifiant == entry.identifiant
-    assert restored.password == entry.password
-    assert restored.email == entry.email
-    assert restored.notes == entry.notes
-    assert restored.otherdata == entry.otherdata
-
-    assert isinstance(restored.created_at, datetime)
-    assert isinstance(restored.updated_at, datetime)
-    
+    assert restored == entry

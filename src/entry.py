@@ -12,8 +12,8 @@ class Entry:
 	email: str = ""
 	notes: str = ""
 	otherdata: dict = field(default_factory=dict)
-	created_at: datetime = field(default_factory=datetime.now)
-	updated_at: datetime = field(default_factory=datetime.now)
+	created_at: datetime = field(default_factory=lambda: datetime.now().replace(microsecond=0))
+	updated_at: datetime = field(default_factory=lambda: datetime.now().replace(microsecond=0))
 
 	def to_dict(self) -> dict:
 		return {
@@ -39,6 +39,6 @@ class Entry:
 			email=d.get("email", ""),
 			notes=d.get("notes", ""),
 			otherdata=d.get("otherdata", {}),
-			created_at=datetime.fromisoformat(d["created_at"]),
-			updated_at=datetime.fromisoformat(d["updated_at"])
+			created_at=datetime.fromisoformat(d["created_at"]).replace(microsecond=0),
+			updated_at=datetime.fromisoformat(d["updated_at"]).replace(microsecond=0),
 		)
