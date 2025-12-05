@@ -2,44 +2,51 @@ import base64
 import os
 from cryptography.hazmat.primitives.kdf.pbkdf2 import PBKDF2HMAC
 from cryptography.hazmat.primitives import hashes
-from cryptography.hazmat.backends import default_backend
 from cryptography.fernet import Fernet, InvalidToken
 
-class Crypto:
+SALT_SIZE = 16
+KDF_ITERATIONS = 300000
+KEY_LENGTH = 32
 
-	@staticmethod
-	def _derive_key(password:str, salt:bytes) -> bytes:
-		kdf = PBKDF2HMAC(
-			algorithm=hashes.SHA256(),
-			length=32,
-			salt=salt,
-			iterations=100000,
-			backend=default_backend()
-		)
-		key = base64.urlsafe_b64encode(kdf.derive(password.encode()))
-		return key
+class CryptoError(Exception):
+	pass
 
-	@staticmethod
-	def encrypt(plaintext: str, master_password:str) -> str:
-		salt = os.urandom(16)
-		key = Crypto._derive_key(master_password, salt)
+def _derive_key(password: str, salt: bytes) -> bytes:
+	kdf = PBKDF2HMAC(
+		algorithm=hashes.SHA256(),
+		length=KEY_LENGTH,
+		salt=salt,
+		iterations=KDF_ITERATIONS,
+	)
+	key =kdf.derive(password.encode())
+	return  base64.urlsafe_b64encode(key)
+
+def encrypt_bytes(data: bytes, master_password: str) -> bytes:
+	salt = os.urandom(SALT_SIZE)
+	key = _derive_key(master_password, salt)
+	cipher = Fernet(key)
+	encrypted = cipher.encrypt(data)
+	encrypted_data = salt + encrypted
+	return encrypted_data
+
+def decrypt_bytes(encrypted_data: bytes, master_password: str) ->bytes:
+	try:
+		salt = encrypted_data[:SALT_SIZE]
+		encrypted = encrypted_data[SALT_SIZE:]
+		key = _derive_key(master_password, salt)
 		cipher = Fernet(key)
-		encrypted = cipher.encrypt(plaintext.encode())
-		combined = salt + encrypted
-		return base64.urlsafe_b64encode(combined).decode()
+		data = cipher.decrypt(encrypted)
+		return data
+	except InvalidToken:
+		raise CryptoError("Mot de passe incorrect ou donnees corrompue")
+	except Exception as error:
+		raise CryptoError(f"Erreur inattendue lors du dechiffrement: {str(error)}")
 
-	@staticmethod
-	def decrypt(encrypted_data: str, master_password:str) ->str:
-		try:
-			combined = base64.urlsafe_b64decode(encrypted_data.encode())
-			salt = combined[:16]
-			encrypted = combined[16:]
-			key = Crypto._derive_key(master_password, salt)
-			cipher = Fernet(key)
-			decrypted = cipher.decrypt(encrypted)
-			return decrypted.decode()
+def encrypt_str_to_bytes(string: str, master_password: str) -> bytes:
+	data = string.encode('utf-8')
+	return encrypt_bytes(data, master_password)
 
-		except InvalidaToken:
-			raise Exception("Mot de passe incorrect ou donnees corrompue")
-		except Exception as error:
-			raise Exception(f"Erreur lors du dechiffrement: {str(error)}")
+def decrypt_bytes_to_str(encrypted_data: bytes, master_password: str) -> str:
+	data = decrypt_bytes(encrypted_data, master_password)
+	string = data.decode('utf-8')
+	return string

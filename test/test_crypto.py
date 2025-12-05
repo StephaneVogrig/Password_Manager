@@ -1,13 +1,19 @@
-from src.crypto import Crypto
+from src.crypto import encrypt_str_to_bytes, decrypt_bytes_to_str
+import pytest
 
 def test_encrypt_and_decrypt():
 	master_password ="my_secure_password"
-	plaintext = "sensitive datat"
+	data = "sensitive data"
+	encrypted = encrypt_str_to_bytes(data, master_password)
+	assert encrypted != data
+	assert isinstance(encrypted, bytes)
+	decrypted = decrypt_bytes_to_str(encrypted, master_password)
+	assert decrypted == data
 
-	encrypted = Crypto.encrypt(plaintext, master_password)
-
-	assert encrypted != plaintext
-	assert isinstance(encrypted, str)
-
-	decrypted = Crypto.decrypt(encrypted, master_password)
-	assert decrypted == plaintext
+def test_encrypt_and_decrypt_wrong_password():
+	master_password ="my_secure_password"
+	wrong_password = "wrong_password"
+	data = "sensitive data"
+	encrypted = encrypt_str_to_bytes(data, master_password)
+	with pytest.raises(Exception):
+		decrypted = decrypt_bytes_to_str(encrypted, wrong_password)
