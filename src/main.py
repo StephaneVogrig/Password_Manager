@@ -1,6 +1,7 @@
 import sys
 import logging
 
+from app import App
 from gui import Gui
 
 logging.basicConfig(
@@ -18,7 +19,8 @@ def main() -> int:
         return 1
 
     try:
-        gui = Gui()
+        app = App(filepath=argv[1] if argc == 2 else None)
+        gui = Gui(app=app)
         gui.mainloop()
     except Exception:
         logger.exception("Une erreur inattendue est survenue")

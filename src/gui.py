@@ -16,14 +16,16 @@ class TextVar:
         self.widget.insert("1.0", value)
 
 class Gui(tk.Tk):
-    def __init__(self):
+    def __init__(self, app):
         super().__init__()
-        self.title("Gestionnaire de mot de passe")
-        self.geometry("700x400")
-        self.minsize(560, 320)
+        self.app = app
         self.build_ui()
 
     def build_ui(self) -> None:
+        self.title("Gestionnaire de mot de passe")
+        self.geometry("700x400")
+        self.minsize(560, 320)
+
         frame_global = ttk.Panedwindow(self, orient=tk.HORIZONTAL)
         frame_global.pack(fill=tk.BOTH, expand=True, padx=8, pady=8)
 
@@ -36,12 +38,24 @@ class Gui(tk.Tk):
         self.build_frame_left(frame_left)
         self.build_frame_right(frame_right)
 
+        self.update_idletasks()
+        frame_global.sashpos(0,300)
+
     def build_frame_left(self, parent: ttk.Frame) -> None:
+
         label = ttk.Label(parent, text="Sites enregistrés", font=("", 10 , "bold"))
         label.pack(anchor="w", pady=(0,4))
 
         list_container = ttk.Frame(parent)
         list_container.pack(fill=tk.BOTH, expand=True)
+
+        scrollbar = ttk.Scrollbar(list_container, orient=tk.VERTICAL)
+
+        self.site_listbox = tk.Listbox(list_container, exportselection=False, yscrollcommand=scrollbar.set)
+        self.site_listbox.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
+
+        scrollbar.config(command=self.site_listbox.yview)
+        scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
 
     def build_frame_right(self, parent: ttk.Frame) -> None:
         # Pour étirer la colonne des Entry
@@ -91,3 +105,4 @@ class Gui(tk.Tk):
 
         # Ajout au dictionnaire pour utilisation comme les autres variables
         self.vars["notes"] = TextVar(self.notes_text)
+
