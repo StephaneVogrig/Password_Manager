@@ -57,6 +57,10 @@ class Gui(tk.Tk):
         scrollbar.config(command=self.site_listbox.yview)
         scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
 
+        btn_frame = ttk.Frame(parent)
+        btn_frame.pack(fill=tk.X, pady=(6, 0))
+        self.build_buttons(btn_frame)
+
     def build_frame_right(self, parent: ttk.Frame) -> None:
         # Pour étirer la colonne des Entry
         parent.columnconfigure(1, weight=1)
@@ -106,3 +110,18 @@ class Gui(tk.Tk):
         # Ajout au dictionnaire pour utilisation comme les autres variables
         self.vars["notes"] = TextVar(self.notes_text)
 
+    def build_buttons(self, btn_frame: ttk.Frame) ->None:
+        btn_new    = ttk.Button(btn_frame, text="Nouveau", command=self.on_new)
+        btn_delete = ttk.Button(btn_frame, text="Supprimer", command=self.on_delete)
+
+        btn_new.pack(side=tk.LEFT, expand=True, fill=tk.X, padx=(0, 3))
+        btn_delete.pack(side=tk.LEFT, expand=True, fill=tk.X, padx=(3, 0))
+
+    def on_new(self) -> None:
+        for var in self.vars.values():
+            var.set("")
+
+    def on_delete(self) -> None:
+        selection = self.site_listbox.curselection()
+        if not selection:
+            return
