@@ -1,7 +1,11 @@
 from pathlib import Path
 
-def run_new() -> None:
-    print("hello world from new")
+class App:
+    def __init__(self, filepath: str |None):
+        self.sites = self.load(filepath) if filepath else {}
 
-def run_open(path: str) -> None:
-    print("hello world from open")
+    def load(self, filepath: str) -> dict:
+        vault_path = Path(path)
+        if not vault_path.exists():
+            raise FileNotFoundError(f"Le fichier '{path} n'existe pas.")
+
